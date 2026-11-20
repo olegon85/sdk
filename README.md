@@ -15,6 +15,17 @@ with the probe kept as a runnable sample:
 | `include/ps5/rtc.h` | `samples/hello_rtc` | tick epoch year 1, zone limits, day-of-week order of checks, 16-bit year wrap, negative-tick asymmetry |
 | (no header: dlsym by mangled name) | `samples/hello_abstract` | the eight constant answers of `libSceAbstractLocal.sprx`: 0, `0x37C5A`, `0x809E0002`, `0x809E0005` reproduced unchanged |
 
+### Resolving exports that have no name string
+
+The export tables of retail modules store symbols by NID hash; the name string is optional and most unnamed exports carry none. Passing the **NID text itself** to `dlsym` resolves them (observed on a PS5 Pro at firmware 13.60, payload process loaded through elfldr; mechanism not investigated):
+
+```c
+void* lib = dlopen("libScePsm.sprx", RTLD_LAZY);
+void* p = dlsym(lib, "PN1KQl3wnoU"); /* -> resolves; the call returns 0x80B30006 */
+```
+
+Measured with this technique: the nine unnamed `libkernel_sys` exports (`pCbBddNl66Y` and friends), three of `libScePsm`, `Vf6lJz4-bEU` in `libwebrtc`, `aFrwE9W9faU` in `libSceCdlgUtilServer` and the three NIDs of `libSceFsInternalForVsh`. It also proves absence: `libSceFreeTypeOt.sprx` resolves `VW4GD-TaIUc` (returns 7) but not `sceFreeTypeOtLibrarySetLcdFilter` - that name string exists nowhere in its table.
+
 Firmware-specific knowledge only lands here when a sample reproduces it on
 hardware; API signatures follow the PS4/PS5 SDK families until measured
 otherwise. To use this fork as your SDK: install the upstream release zip,
