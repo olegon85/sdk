@@ -13,6 +13,7 @@ with the probe kept as a runnable sample:
 | `include/ps5/pthread.h` | `samples/hello_pthread` | cond/mutex/rwlock init-destroy round trip, one-word caller slots, `pthread_cond_setname_np` name-once rule (EAGAIN when already named), NULL cond faults |
 | `include/ps5/cescs.h` | `samples/hello_cescs` | 47 single-byte tables byte-for-byte against public sources, ISO 8859-1 identity, error codes and output-zeroing rules |
 | `include/ps5/rtc.h` | `samples/hello_rtc` | tick epoch year 1, zone limits, day-of-week order of checks, 16-bit year wrap, negative-tick asymmetry |
+| (no header: dlsym by mangled name) | `samples/hello_abstract` | the eight constant answers of `libSceAbstractLocal.sprx`: 0, `0x37C5A`, `0x809E0002`, `0x809E0005` reproduced unchanged |
 
 Firmware-specific knowledge only lands here when a sample reproduces it on
 hardware; API signatures follow the PS4/PS5 SDK families until measured
