@@ -1,4 +1,23 @@
 # ps5-payload-sdk
+
+## This fork (olegon85/sdk)
+
+Carries evidence-based additions on top of upstream while they wait for
+upstream review (see ps5-payload-dev/sdk#84). Every declaration here marked
+"measured" comes from a payload process run against real hardware
+(PS5 Pro, `kernel_get_fw_version` = `0x13600007`, loaded through elfldr),
+with the probe kept as a runnable sample:
+
+| Header | Sample | Measured on 13.60 |
+|---|---|---|
+| `include/ps5/pthread.h` | `samples/hello_pthread` | cond/mutex/rwlock init-destroy round trip, one-word caller slots, `pthread_cond_setname_np` name-once rule (EAGAIN when already named), NULL cond faults |
+| `include/ps5/cescs.h` | `samples/hello_cescs` | 47 single-byte tables byte-for-byte against public sources, ISO 8859-1 identity, error codes and output-zeroing rules |
+| `include/ps5/rtc.h` | `samples/hello_rtc` | tick epoch year 1, zone limits, day-of-week order of checks, 16-bit year wrap, negative-tick asymmetry |
+
+Firmware-specific knowledge only lands here when a sample reproduces it on
+hardware; API signatures follow the PS4/PS5 SDK families until measured
+otherwise. To use this fork as your SDK: install the upstream release zip,
+then copy `include/ps5/*.h` over its `target/include/ps5/`.
 This is an SDK for developing payloads targeted at exploited PS5s. ELF loaders
 known to work include:
 - [ps5-payload-elfldr][elfldr]
